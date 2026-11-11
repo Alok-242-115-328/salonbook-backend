@@ -137,6 +137,18 @@ app.post('/applications', async (req, res) => {
     res.send(result);
 })
 
+app.patch('/applications/:id', async(req, res) =>{
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id) };
+    const updatedDoc = {
+        $set: {
+            status: req.body.status,
+        }
+    }
+    const result = await applications.updateOne(query, updatedDoc);
+    res.send(result);
+})
+
 // payments related apis
 app.post('/payments/checkout-verify', async (req, res) => {
     const { sessionId } = req.body;
