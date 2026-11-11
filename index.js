@@ -43,7 +43,7 @@ app.get('/users', async (req, res) => {
     res.send(result);
 })
 
-app.get('/users/:id/premium', async(req, res) =>{
+app.get('/users/:id/premium', async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const result = await users.findOne(query, { projection: { premium: 1 } });
@@ -65,6 +65,9 @@ app.get('/jobs', async (req, res) => {
         }
         if (req.query.category) {
             query.category = req.query.category;
+        }
+        if (req.query.recruiterId) {
+            query.recruiterId = req.query.recruiterId;
         }
         if (req.query.search) {
             query.$or = [
@@ -110,6 +113,9 @@ app.get('/applications', async (req, res) => {
     const query = {};
     if (req.query.applicantId) {
         query.userId = req.query.applicantId;
+    }
+    if(req.query.jobId){
+        query.jobId = req.query.jobId;
     }
     const cursor = applications.find(query);
     const result = await cursor.toArray();
