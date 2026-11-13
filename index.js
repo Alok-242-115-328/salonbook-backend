@@ -75,6 +75,23 @@ const verifyToken = async (req, res, next) => {
     next();
 }
 
+// must call this middleware after verifyToken
+const verifySeeker = async (req, res, next) => {
+    if (req.user.role !== 'seeker') {
+        res.status(403).send({ message: 'Forbidden' });
+        return;
+    }
+    next();
+}
+
+const verifyRecruiter = async (req, res, next) => {
+    if (req.user.role !== 'recruiter') {
+        res.status(403).send({ message: 'Forbidden' });
+        return;
+    }
+    next();
+}
+
 // users related apis
 app.get('/users', async (req, res) => {
     const cursor = users.find({});
@@ -143,7 +160,7 @@ app.get(`/jobs/:id`, async (req, res) => {
 })
 
 
-app.post('/jobs', async (req, res) => {
+app.post('/jobs', verifyToken, verifyRecruiter, async (req, res) => {
     const job = req.body;
     const result = await jobs.insertOne(job);
     res.send(result);
@@ -191,7 +208,7 @@ app.get('/applications/count', async (req, res) => {
     res.send({ count: result });
 })
 
-app.post('/applications', async (req, res) => {
+app.post('/applications', verifyToken, verifySeeker, async (req, res) => {
     const application = req.body;
     const result = await applications.insertOne(application);
     res.send(result);
