@@ -16,7 +16,7 @@ app.use(cors());
 const client = new MongoClient(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.vyznij5.mongodb.net/`);
 
 
-const myLogger = (req, res, next) =>{
+const myLogger = (req, res, next) => {
     console.log('now hitting api', req.url, req.headers)
     next();
 }
@@ -34,6 +34,7 @@ export async function connectToMongoDB() {
 const connectedClient = await connectToMongoDB();
 const database = connectedClient.db("hireloopdb");
 const users = database.collection("user");
+const sessions = database.collection("session");
 const jobs = database.collection("jobs");
 const applications = database.collection("applications");
 const payments = database.collection("payments");
@@ -42,18 +43,36 @@ app.get('/', (req, res) => {
     res.send('hire loop is looping')
 })
 
-const verifyToken = (req, res, next) => {
+const verifyToken = async (req, res, next) => {
     const authHeader = req.headers.authorization;
-    if(!authHeader){
-        res.send({ status: 401, message: 'Unauthorized' });
+    if (!authHeader) {
+        res.status(401).send({ message: 'Unauthorized' });
         return;
     }
     const token = authHeader.split(' ')[1];
-    if(!token){
-        res.send({ status: 401, message: 'Unauthorized' });
+    if (!token) {
+        res.status(401).send({ message: 'Unauthorized' });
         return;
     }
-    
+
+    const query = { token };
+    const session = await sessions.findOne(query);
+    if (!session) {
+        res.status(401).send({ message: 'Unauthorized' });
+        return;
+    }
+
+    const userId = session.userId;
+
+    const userQuery = { _id: new ObjectId(userId) };
+    const user = await users.findOne(userQuery);
+    if (!user) {
+        res.status(401).send({ message: 'Unauthorized' });
+        return;
+    }
+
+    req.user = user;
+    next();
 }
 
 // users related apis
@@ -70,7 +89,7 @@ app.get('/users/:id/premium', async (req, res) => {
     res.send(result);
 })
 
-app.patch('/users/:id/role', async(req, res) =>{
+app.patch('/users/:id/role', async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const updatedDoc = {
@@ -147,7 +166,15 @@ app.get('/applications', verifyToken, async (req, res) => {
     if (req.query.applicantId) {
         query.userId = req.query.applicantId;
     }
-    if(req.query.jobId){
+    if (req.query.jobId) {
+
+        const jobQuery = { _id: new ObjectId(req.query.jobId) };
+        const job = await jobs.findOne(jobQuery);
+        if (job.recruiterId !== req.user._id.toString() && req.user.role !=='admin' ) {
+            res.status(403).send({ message: 'Forbidden' });
+            return;
+        }
+
         query.jobId = req.query.jobId;
     }
     const cursor = applications.find(query);
@@ -170,7 +197,7 @@ app.post('/applications', async (req, res) => {
     res.send(result);
 })
 
-app.patch('/applications/:id', async(req, res) =>{
+app.patch('/applications/:id', async (req, res) => {
     const id = req.params.id;
     const query = { _id: new ObjectId(id) };
     const updatedDoc = {
