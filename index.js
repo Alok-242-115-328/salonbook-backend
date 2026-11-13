@@ -15,6 +15,12 @@ app.use(cors());
 
 const client = new MongoClient(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.vyznij5.mongodb.net/`);
 
+
+const myLogger = (req, res, next) =>{
+    console.log('now hitting api', req.url, req.headers)
+    next();
+}
+
 export async function connectToMongoDB() {
     try {
         await client.connect();
@@ -35,6 +41,20 @@ const payments = database.collection("payments");
 app.get('/', (req, res) => {
     res.send('hire loop is looping')
 })
+
+const verifyToken = (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if(!authHeader){
+        res.send({ status: 401, message: 'Unauthorized' });
+        return;
+    }
+    const token = authHeader.split(' ')[1];
+    if(!token){
+        res.send({ status: 401, message: 'Unauthorized' });
+        return;
+    }
+    
+}
 
 // users related apis
 app.get('/users', async (req, res) => {
@@ -121,7 +141,8 @@ app.delete('/jobs/:id', async (req, res) => {
 
 // applications related apis
 
-app.get('/applications', async (req, res) => {
+app.get('/applications', verifyToken, async (req, res) => {
+
     const query = {};
     if (req.query.applicantId) {
         query.userId = req.query.applicantId;
