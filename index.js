@@ -101,7 +101,7 @@ const verifyAdmin = async (req, res, next) => {
 }
 
 // users related apis
-app.get('/users', async (req, res) => {
+app.get('/users', verifyToken, verifyAdmin, async (req, res) => {
     const cursor = users.find({});
     const result = await cursor.toArray();
     res.send(result);
