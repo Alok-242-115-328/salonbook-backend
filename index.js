@@ -295,3 +295,5 @@ app.post('/payments/checkout-verify', async (req, res) => {
 app.listen(port, () => {
     console.log(`hire loop is running on port ${port}`)
 })
+
+export default app;
