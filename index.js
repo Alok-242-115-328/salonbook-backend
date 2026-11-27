@@ -5,7 +5,7 @@ import "dotenv/config";
 import { createRemoteJWKSet, jwtVerify } from "jose";
 import Stripe from "stripe";
 
-const app = express();
+const app = express();/////////
 //app.set('trust proxy', 1);
 const PORT = process.env.PORT || 8000;
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";

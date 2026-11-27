@@ -44,7 +44,7 @@ export const auth = betterAuth({
   },
   // 
 account: {
-   skipStateCookieCheck: true, // 👈 এই লাইনটি যোগ করুন
+   skipStateCookieCheck: true, // 👈 এই লাইনটি যোগ করুন///88888888888
   storeStateStrategy: "database", // 👈 কুকির বদলে ডেটাবেসে স্টেট সেভ করবে
   modelName: "account", // 👈 ডেটাবেসে অ্যাকাউন্ট মডেলের নাম
 },
