@@ -37,7 +37,7 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
-       partitioned: true,  // 👈 এই লাইনটি যোগ করুন////////////////////////////
+       partitioned: true,  // 👈 এই লাইনটি যোগ করুন////////////////////////////*************************************************** */
         path: "/",
     },
   },
