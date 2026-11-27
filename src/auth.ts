@@ -35,6 +35,7 @@ export const auth = betterAuth({
 // 👇 এখানে পরিবর্তনটি করুন 👇
   advanced: {
     defaultCookieAttributes: {
+      
       sameSite: "none",
       secure: true,
        partitioned: true,  // 👈 এই লাইনটি যোগ করুন////////////////////////////*************************************************** */
@@ -43,6 +44,7 @@ export const auth = betterAuth({
   },
   // 
 account: {
+   skipStateCookieCheck: true, // 👈 এই লাইনটি যোগ করুন
   storeStateStrategy: "database", // 👈 কুকির বদলে ডেটাবেসে স্টেট সেভ করবে
   modelName: "account", // 👈 ডেটাবেসে অ্যাকাউন্ট মডেলের নাম
 },
