@@ -37,12 +37,15 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
-       partitioned: true,  // 👈 এই লাইনটি যোগ করুন
+       partitioned: true,  // 👈 এই লাইনটি যোগ করুন////////////////////////////
         path: "/",
     },
   },
   // 
-
+account: {
+  storeStateStrategy: "database", // 👈 কুকির বদলে ডেটাবেসে স্টেট সেভ করবে
+  modelName: "account", // 👈 ডেটাবেসে অ্যাকাউন্ট মডেলের নাম
+},
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
