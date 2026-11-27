@@ -28,6 +28,17 @@ export const auth = betterAuth({
   secret: env.BETTER_AUTH_SECRET,
   trustedOrigins: [...env.CLIENT_ORIGINS, env.SERVER_URL],
   database: mongodbAdapter(rawDb),
+
+// 👇 এই অংশটুকু নতুন যোগ করুন 👇
+  advanced: {
+    cookies: {
+      sameSite: "none",
+      secure: true,
+    },
+  },
+  // 👆 --------------------------------- 👆
+
+
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 6,
