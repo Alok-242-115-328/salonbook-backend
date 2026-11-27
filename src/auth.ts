@@ -23,10 +23,13 @@ function validatePassword(password: string) {
 }
 
 export const auth = betterAuth({
+ baseURL: "https://salonbook-backend-nuic.onrender.com", // আপনার Render URL
+  trustedOrigins: ["https://salonbook-eight.vercel.app"], // আপনার Vercel URL
+
   appName: "SalonBook",
-  baseURL: env.SERVER_URL,
+ // baseURL: env.SERVER_URL,
   secret: env.BETTER_AUTH_SECRET,
-  trustedOrigins: [...env.CLIENT_ORIGINS, env.SERVER_URL],
+ // trustedOrigins: [...env.CLIENT_ORIGINS, env.SERVER_URL],
   database: mongodbAdapter(rawDb),
 
 // 👇 এখানে পরিবর্তনটি করুন 👇
@@ -34,6 +37,7 @@ export const auth = betterAuth({
     defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
+        path: "/",
     },
   },
   // 
