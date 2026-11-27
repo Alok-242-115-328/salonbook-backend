@@ -29,15 +29,14 @@ export const auth = betterAuth({
   trustedOrigins: [...env.CLIENT_ORIGINS, env.SERVER_URL],
   database: mongodbAdapter(rawDb),
 
-// 👇 এই অংশটুকু নতুন যোগ করুন 👇
+// 👇 এখানে পরিবর্তনটি করুন 👇
   advanced: {
-    cookies: {
+    defaultCookieAttributes: {
       sameSite: "none",
       secure: true,
     },
   },
-  // 👆 --------------------------------- 👆
-
+  // 
 
   emailAndPassword: {
     enabled: true,
